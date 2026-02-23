@@ -1,19 +1,22 @@
 const express = require("express");
-const dotenv = require("dotenv");
+require("dotenv").config({ quiet: true });
 const connectDB = require("./config/database");
 const app = express();
-dotenv.config({});
+const cookieParser = require("cookie-parser");
+const authRouter = require("./routes/auth.router");
 const PORT = process.env.PORT || 6000;
 
 app.use(express.json());
+app.use(cookieParser());
+
+app.use("/auth", authRouter);
 
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
-      console.log("Database connection is established!");
       console.log(`The app is successfully running on ${PORT}`);
     });
   })
   .catch((err) => {
-    console.log(`Database can't be connected!`);
+    console.log(err);
   });
